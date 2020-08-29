@@ -105,13 +105,19 @@ client.on('message', msg => {
   }
 
   if (message === "!!pass"){
-    //pick a random cunt to send it to 
-    //remove the role from the previous person if there was one
-    //add role to the new person
+    // check timestamp to make sure they are within the time limit.
+    // if not, return "NOPE. IM COMFY. Maybe in another xx:xx"
+
+    // pick a random cunt to send it to 
+    // remove the role from the previous person if there was one
+    // add role to the new person
     // set timestamp
   }
 
   if (message.includes("!!pass <@")){
+    // check timestamp to make sure they are within the time limit.
+    // if not, return "NOPE. IM COMFY. Maybe in another xx:xx"
+        
     // pass it to them specifically.
     // set timestamp
   }
