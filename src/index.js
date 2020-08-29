@@ -70,6 +70,59 @@ client.on('message', msg => {
       return;
   }
 
+  const message = msg.content.toLowerCase();
+
+  if (message === "!!help"){
+    
+    const helpMessage = 
+    "\n\n**Setup:**\n" +
+    "`!!setgrouprole [@role]`: set the role that the bot will use for brainless folk\n" +
+    "`!!setcellrole [@role]`: set the role that the bot will use for who has the brain cell\n\n" +
+
+    "**General:**\n" +
+    "`!!pass`: Pass the brain cell to someone else randomly\n" +
+    "`!!pass [@role]`: pass the braincell to someone specific\n\n";
+
+    msg.reply(helpMessage);
+  }
+
+  if (message.includes("!!setgrouprole <@")){
+    // check the roll exists
+    // if it doesn't, then respond in kind "Here, pall. fuck off."
+    // if it does. store against the guild id.
+
+    // check if both brainlets and cell are set. If they are, let them know who's got the starting cell. 
+    // set timestamp
+  }
+
+  if (message.includes("!!setcellrole <@")){
+    // check the roll exists
+    // if it doesn't, then respond in kind "Here, pall. fuck off."
+    // if it does. store against the guild id.
+    
+
+    // check if both brainlets and cell are set. If they are, let them know who's got the starting cell. 
+  }
+
+  if (message === "!!pass"){
+    //pick a random cunt to send it to 
+    //remove the role from the previous person if there was one
+    //add role to the new person
+    // set timestamp
+  }
+
+  if (message.includes("!!pass <@")){
+    // pass it to them specifically.
+    // set timestamp
+  }
+
+  // setup commands
+
+
+  // general commands
+
+  // stupid things
+
   // msg.reply("Poggers");
 
 });
