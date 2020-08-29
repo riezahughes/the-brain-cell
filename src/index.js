@@ -1,3 +1,7 @@
+// bot joins server, messages person who added it
+// person sets up roles
+
+
 require('dotenv').config()
 
 const Discord = require('discord.js');
@@ -9,19 +13,22 @@ let brainyBoi;
 let roleId = process.env.ROLE_ID;
 let totalUsers;
 
+// on join, check for guild_id
+// if --- it was in here previously, remove from db.
+// message user, let them know how the bot works. With two different roles. 
+// ask for role tags for who's the group of people involved and what is the braincells
+// store data into db once selected.
+// Ask user if they want someone in particular or if a random choice
+// initialise DONE
 
-let chosen_users=[
-    "48281847985078272",
-    "104670340541595648",
-    "121632246653386762",
-    "152194558774476801",
-    "105153919688122368",
-    "110455196026421248",
-    "116599450339639305",
-    "177502257061953536",
-    "177502257061953536",
-    "226082256920379392"
-]
+// on pass, 
+// if - not the braincell, return message.
+// if - last pass was longer than an hour
+  // if - pass with no tag, then get row, use tag remove from previous user/add to new user. Reply who has the braincell. update timestamp
+  // if - pass with tag, remove from current brainlett and pass to anotehr. reply who has it now. update timestamp
+  // if - who, let them know who's been tagged with it.
+// else - tell them they can't pass for another xx minutes : xx seconds
+
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -44,7 +51,7 @@ client.on('message', msg => {
                brainyBoi = msg.guild.roles.get(process.env.ROLE_ID).members.map(m=>m.user.tag);
             // brainyBoi = guild.roles.get(roleId).members;
             // brainyBoi = brainyBoi[0];
-            console.log(brainyBoi);
+               console.log(brainyBoi);
         });
 
         //message.channel.send(memberCount + " members have this role!");        
