@@ -5,9 +5,9 @@ exports.shorthands = undefined;
 exports.up = pgm => {
     pgm.createTable("servers", {
         id: 'id',
-        guild_id: { type: 'integer', notNull: true },
-        braincell_group_id: { type: 'integer', notNull: true },
-        braincell_singular_id: { type: 'varchar(1000)', notNull: true },
+        guild_id: { type: 'bigint', notNull: true },
+        braincell_group_id: { type: 'bigint', notNull: false },
+        braincell_singular_id: { type: 'bigint', notNull: false },
         last_moved: {
             type: 'timestamp',
             notNull: true,

@@ -5,6 +5,7 @@ const client = new Discord.Client();
 
 const { Pool } = require('pg')
 
+
 const pool = new Pool({
   user: process.env.POSTGRES_USER,
   host: process.env.POSTGRES_HOST,
@@ -43,21 +44,33 @@ client.on('ready', async () => {
   })
 });
 
-client.on("guildCreate", guild => {
-  // on joining guild, send out a message regarding setup. add new row once setup complete.
+client.on("guildCreate", async (guild) => {
+
+  const addGuild = `INSERT INTO servers (guild_id) VALUES (${guild.id})`;
+  const channel = guild.channels.cache.find(channel => channel.type === 'text' && channel.permissionsFor(guild.me).has('SEND_MESSAGES'))
+  channel.send("```The Token Braincell has arrived!```\n**Setup:**\n\n`!!setgrouprole [@role]` - set which role will be allowed to use the braincell. \n`!!setcellrole [@role]` - set which role to display for the cell.")
+  await pool.query(addGuild)
+  await pool.query('SELECT * FROM servers', (err, res) => {
+    client.user.setActivity(` with ${res.rowCount} other cells`);  
+  })
+
 });
 
-client.on("guildDelete", guild => {
-  // on leaving guild, delete the guild row.
+client.on("guildDelete", async (guild) => {
+  const removeGuild = `DELETE FROM servers WHERE guild_id = ${guild.id}`;
+  await pool.query(removeGuild)
+  await pool.query('SELECT * FROM servers', (err, res) => {
+    client.user.setActivity(` with ${res.rowCount} other cells`);  
+  })
 });
 
 client.on('message', msg => {
 
-  if(msg.bot){
+  if(msg.author.bot){
       return;
   }
 
-  msg.reply("Poggers");
+  // msg.reply("Poggers");
 
 });
 

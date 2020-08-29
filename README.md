@@ -18,3 +18,5 @@ Just pass it along to people of your choosing
 
  - Add players via command
  - Remove players via command
+
+ `DATABASE_URL=postgres://[user]:[pass]@[host]:5432/[db] npm run migrate up`
