@@ -1,17 +1,23 @@
-// bot joins server, messages person who added it
-// person sets up roles
-
-
 require('dotenv').config()
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-let command;
-let guild;
-let brainyBoi;
-let roleId = process.env.ROLE_ID;
-let totalUsers;
+const { Pool } = require('pg')
+
+const pool = new Pool({
+  user: process.env.POSTGRES_USER,
+  host: process.env.POSTGRES_HOST,
+  database: process.env.POSTGRES_DB,
+  password: process.env.POSTGRES_PASSWORD,
+  port: 5432, 
+})
+
+// let command;
+// let guild;
+// let brainyBoi;
+// let roleId = process.env.ROLE_ID;
+// let totalUsers;
 
 // on join, check for guild_id
 // if --- it was in here previously, remove from db.
@@ -30,8 +36,19 @@ let totalUsers;
 // else - tell them they can't pass for another xx minutes : xx seconds
 
 
-client.on('ready', () => {
+client.on('ready', async () => {
   console.log(`Logged in as ${client.user.tag}!`);
+  await pool.query('SELECT * FROM servers', (err, res) => {
+    client.user.setActivity(` with ${res.rowCount} other cells`);  
+  })
+});
+
+client.on("guildCreate", guild => {
+  // on joining guild, send out a message regarding setup. add new row once setup complete.
+});
+
+client.on("guildDelete", guild => {
+  // on leaving guild, delete the guild row.
 });
 
 client.on('message', msg => {
@@ -40,26 +57,7 @@ client.on('message', msg => {
       return;
   }
 
-  command = msg.content.toLowerCase();
-
-  if(command === "!!pass"){
-    if(chosen_users.includes(msg.author.id)){
-        guild = msg.guild.members.fetch().then(fetchedMembers => {
-            console.log(fetchedMembers)
-
-            // brainyBoi = fetchedMembers.filter(member => member.guild._roles.includes(process.env.ROLE_ID) === true);
-               brainyBoi = msg.guild.roles.get(process.env.ROLE_ID).members.map(m=>m.user.tag);
-            // brainyBoi = guild.roles.get(roleId).members;
-            // brainyBoi = brainyBoi[0];
-               console.log(brainyBoi);
-        });
-
-        //message.channel.send(memberCount + " members have this role!");        
-    }else{
-        msg.reply("The brain cell has determined that was a lie.")
-    }    
-  }
-
+  msg.reply("Poggers");
 
 });
 
