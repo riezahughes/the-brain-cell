@@ -64,8 +64,11 @@ client.on("guildDelete", async (guild) => {
   })
 });
 
-client.on('message', msg => {
+client.on('message', async (msg) => {
 
+
+
+  // console.log(msg.content);
   if(msg.author.bot){
       return;
   }
@@ -87,8 +90,26 @@ client.on('message', msg => {
   }
 
   if (message.includes("!!setgrouprole <@")){
+
     // check the roll exists
-    // if it doesn't, then respond in kind "Here, pall. fuck off."
+    const groupRole = message.split(" ");
+    const roleTag = groupRole[1].slice(3, -1);
+
+    const roleChoice = await msg.channel.guild.roles.fetch(roleTag);
+    if(!roleChoice){
+      msg.reply("You're a few braincells short of a role there.\n Remember, the role needs to be pingable in the roles options.");
+    }
+
+    const addGroupRole = `UPDATE servers SET braincell_group_id = ${roleTag}`;
+    // const addGroupRole = `UPDATE servers SET braincell_group_id = ${roleTag}`;
+
+    const test = await pool.query(addGroupRole);
+    console.log(test);
+
+    msg.reply("```diff\n+ Empty brainlet group has been set! Homes now available!```")
+
+
+    // if it doesn't, then respond in kind "Here, pal. fuck off."
     // if it does. store against the guild id.
 
     // check if both brainlets and cell are set. If they are, let them know who's got the starting cell. 
@@ -104,6 +125,10 @@ client.on('message', msg => {
     // check if both brainlets and cell are set. If they are, let them know who's got the starting cell. 
   }
 
+  if (message === "!!who"){
+    // respond who has the role right now. 
+  }
+
   if (message === "!!pass"){
     // check timestamp to make sure they are within the time limit.
     // if not, return "NOPE. IM COMFY. Maybe in another xx:xx"
@@ -117,7 +142,7 @@ client.on('message', msg => {
   if (message.includes("!!pass <@")){
     // check timestamp to make sure they are within the time limit.
     // if not, return "NOPE. IM COMFY. Maybe in another xx:xx"
-        
+
     // pass it to them specifically.
     // set timestamp
   }
