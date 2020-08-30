@@ -14,29 +14,6 @@ const pool = new Pool({
   port: 5432, 
 })
 
-// let command;
-// let guild;
-// let brainyBoi;
-// let roleId = process.env.ROLE_ID;
-// let totalUsers;
-
-// on join, check for guild_id
-// if --- it was in here previously, remove from db.
-// message user, let them know how the bot works. With two different roles. 
-// ask for role tags for who's the group of people involved and what is the braincells
-// store data into db once selected.
-// Ask user if they want someone in particular or if a random choice
-// initialise DONE
-
-// on pass, 
-// if - not the braincell, return message.
-// if - last pass was longer than an hour
-  // if - pass with no tag, then get row, use tag remove from previous user/add to new user. Reply who has the braincell. update timestamp
-  // if - pass with tag, remove from current brainlett and pass to anotehr. reply who has it now. update timestamp
-  // if - who, let them know who's been tagged with it.
-// else - tell them they can't pass for another xx minutes : xx seconds
-
-
 client.on('ready', async () => {
   console.log(`Logged in as ${client.user.tag}!`);
   await pool.query('SELECT * FROM servers', (err, res) => {
@@ -204,9 +181,6 @@ client.on('message', async (msg) => {
         })
       }
 
-      // console.log(brainPeeps);
-      // console.log(chosenArr);
-
       const giveRole = await msg.guild.members.cache.get(Members_Id[chosenArr]);
 
       await giveRole.roles.add(updatedResults.rows[0].braincell_singular_id); 
@@ -243,7 +217,7 @@ client.on('message', async (msg) => {
 
     const memberFind = await msg.guild.members.fetch(msg.author.id);
 
-    if(!memberFind.roles.cache.has(checkRow.rows[0].braincell_group_id)){
+    if(!memberFind.roles.cache.has(checkRow.rows[0].braincell_group_id) ){
 
       const embed = new Discord.MessageEmbed({
         "title": `You're not able to join. Maybe your heads a little too full?`,
@@ -328,32 +302,67 @@ client.on('message', async (msg) => {
   
         msg.channel.send(`<@&${msg.author.id}>`, {embed});
       }
-
-    // check timestamp to make sure they are within the time limit.
-    // if not, return "NOPE. IM COMFY. Maybe in another xx:xx"
-
-    // pick a random cunt to send it to 
-    // remove the role from the previous person if there was one
-    // add role to the new person
-    // set timestamp
   }
 
   if (message.includes("!!pass <@")){
-    // check timestamp to make sure they are within the time limit.
-    // if not, return "NOPE. IM COMFY. Maybe in another xx:xx"
-
-    // pass it to them specifically.
-    // set timestamp
+    //TBC
   }
 
-  // setup commands
+  if (message === "!!labotomy"){
+    if(!msg.member.hasPermission("ADMINISTRATOR")){
+      const embed = new Discord.MessageEmbed({
+        "title": `:brain: Sorry! You don't have permission to shake the token braincell out`,
+        "description": `Try asking a server admin!`,
+        "color": "ff0000"
+      }); 
 
+      return msg.channel.send(`<@${msg.author.id}>`, {embed});         
+    }
+      const pullRow = `SELECT * FROM servers WHERE guild_id = ${msg.guild.id}`;
 
-  // general commands
+      const checkRow = await pool.query(pullRow);
 
-  // stupid things
+      const updateTimeStamp = `UPDATE servers SET last_moved = NOW()`;
 
-  // msg.reply("Poggers");
+      const Role = msg.guild.roles.cache.find(role => role.id == checkRow.rows[0].braincell_group_id);
+      
+      const Members = msg.guild.members.cache.filter(member => member.roles.cache.find(role => role == Role)).map(member => member.user.tag);
+      const Members_Id = msg.guild.members.cache.filter(member => member.roles.cache.find(role => role == Role)).map(member => member.user.id);
+
+      // console.log(Members);
+
+      const chosenArr = Math.floor(Math.random() * Members.length);
+
+      console.log(Members.length)
+      console.log(chosenArr);
+
+      const brainPeeps = msg.guild.members.cache.filter(member => member.roles.cache.find(role => role == checkRow.rows[0].braincell_singular_id)).map(member => member.user.id);
+
+      if(brainPeeps.length !== 0){
+        brainPeeps.map(async (peep) => {
+          const guildMember = await msg.guild.members.cache.get(peep);
+          await guildMember.roles.remove(checkRow.rows[0].braincell_singular_id);
+        })
+      }
+
+      // console.log(brainPeeps);
+      // console.log(chosenArr);
+
+      const giveRole = await msg.guild.members.cache.get(Members_Id[chosenArr]);
+
+      await giveRole.roles.add(checkRow.rows[0].braincell_singular_id); 
+
+      const embed = new Discord.MessageEmbed({
+        "title": `:brain: The servers been shook and the braincell has been passed to ${Members[chosenArr]} !`,
+        "description": `Keep it safe for the next 15 minutes`,
+        "color": "f05bd7"
+      }); 
+
+      await pool.query(updateTimeStamp);
+
+      return msg.channel.send(`<@&${checkRow.rows[0].braincell_group_id}>`, {embed});      
+    
+  }
 
 });
 
