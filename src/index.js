@@ -79,6 +79,7 @@ client.on('message', async (msg) => {
     
     const helpMessage = 
     "\n\n**Setup:**\n" +
+    "***Make Two Roles. One for the group of people to share it and one for the actual brain cell. Make both taggable***"
     "`!!setgrouprole [@role]`: set the role that the bot will use for brainless folk\n" +
     "`!!setcellrole [@role]`: set the role that the bot will use for who has the brain cell\n\n" +
 
@@ -99,37 +100,117 @@ client.on('message', async (msg) => {
     if(!roleChoice){
       msg.reply("You're a few braincells short of a role there.\n Remember, the role needs to be pingable in the roles options.");
     }
+    const addGroupRole = `UPDATE servers SET braincell_group_id = ${roleTag} RETURNING*`;
+    const updateTimeStamp = `UPDATE servers SET last_moved = NOW()`;
 
-    const addGroupRole = `UPDATE servers SET braincell_group_id = ${roleTag}`;
-    // const addGroupRole = `UPDATE servers SET braincell_group_id = ${roleTag}`;
+    const updatedResults = await pool.query(addGroupRole);
 
-    const test = await pool.query(addGroupRole);
-    console.log(test);
+    if(updatedResults.rows[0].braincell_singular_id){
+
+      const Role = msg.guild.roles.cache.find(role => role.id == updatedResults.rows[0].braincell_group_id);
+
+      // console.log(Role);
+      
+      const Members = msg.guild.members.cache.filter(member => member.roles.cache.find(role => role == Role)).map(member => member.user.tag);
+
+      // console.log(Members);
+
+      const chosenArr = Math.floor(Math.random() * Members.length);
+
+      const brainPeeps = msg.guild.members.cache.filter(member => member.roles.cache.find(role => role == updatedResults.rows[0].braincell_singular_id)).map(member => member.user.id);
+
+      brainPeeps.map(async (peep) => {
+        const guildMember = await msg.guild.members.cache.get(peep);
+        await guildMember.roles.remove(updatedResults.rows[0].braincell_singular_id);
+      })
+
+      const giveRole = await msg.guild.members.cache.get(brainPeeps[chosenArr]);
+
+      await giveRole.roles.add(updatedResults.rows[0].braincell_singular_id); 
+
+      const embed = new Discord.MessageEmbed({
+        "title": `You're all set up! The brain cell has been passed to ${Members[chosenArr]} !`,
+        "description": `Keep it safe for the next few minutes`,
+        "color": "f05bd7"
+      }); 
+
+      await pool.query(updateTimeStamp);
+
+      return msg.channel.send(`<@&${updatedResults.rows[0].braincell_group_id}>`, {embed});
+
+      // msg.reply(```diff\n+You're all set! Braincell given to ${chosen}```)
+      // return;
+    }
 
     msg.reply("```diff\n+ Empty brainlet group has been set! Homes now available!```")
 
-
-    // if it doesn't, then respond in kind "Here, pal. fuck off."
-    // if it does. store against the guild id.
-
-    // check if both brainlets and cell are set. If they are, let them know who's got the starting cell. 
-    // set timestamp
   }
 
   if (message.includes("!!setcellrole <@")){
-    // check the roll exists
-    // if it doesn't, then respond in kind "Here, pall. fuck off."
-    // if it does. store against the guild id.
-    
 
-    // check if both brainlets and cell are set. If they are, let them know who's got the starting cell. 
+    // check the roll exists
+    const userRole = message.split(" ");
+    const roleTag = userRole[1].slice(3, -1);
+
+    const roleChoice = await msg.channel.guild.roles.fetch(roleTag);
+    if(!roleChoice){
+      msg.reply("You're a few braincells short of a role there.\n Remember, the role needs to be pingable in the roles options.");
+    }
+
+
+    const addUserRole = `UPDATE servers SET braincell_singular_id = ${roleTag} RETURNING*`;
+    const updateTimeStamp = `UPDATE servers SET last_moved = NOW()`;
+
+    // const addGroupRole = `UPDATE servers SET braincell_group_id = ${roleTag}`;
+
+    const updatedResults = await pool.query(addUserRole);
+    // console.log()
+
+    if(updatedResults.rows[0].braincell_group_id){
+
+      const Role = msg.guild.roles.cache.find(role => role.id == updatedResults.rows[0].braincell_group_id);
+
+      // console.log(Role);
+      
+      const Members = msg.guild.members.cache.filter(member => member.roles.cache.find(role => role == Role)).map(member => member.user.tag);
+
+      // console.log(Members);
+
+      const chosenArr = Math.floor(Math.random() * Members.length);
+
+      const brainPeeps = msg.guild.members.cache.filter(member => member.roles.cache.find(role => role == updatedResults.rows[0].braincell_singular_id)).map(member => member.user.id);
+
+      brainPeeps.map(async (peep) => {
+        const guildMember = await msg.guild.members.cache.get(peep);
+        await guildMember.roles.remove(updatedResults.rows[0].braincell_singular_id);
+      })
+
+      const giveRole = await msg.guild.members.cache.get(brainPeeps[chosenArr]);
+
+      await giveRole.roles.add(updatedResults.rows[0].braincell_singular_id); 
+
+      const embed = new Discord.MessageEmbed({
+        "title": `You're all set up! The brain cell has been passed to ${Members[chosenArr]} !`,
+        "description": `Keep it safe for the next few minutes`,
+        "color": "f05bd7"
+      }); 
+
+      await pool.query(updateTimeStamp);
+
+      return msg.channel.send(`<@&${updatedResults.rows[0].braincell_group_id}>`, {embed});
+
+    }
+
+    msg.reply("```diff\n+ Brain Cell Role has been set! Ready to go hunting! Just set the group role and we'll be good to go!```")
+
   }
 
-  if (message === "!!who"){
+  if (message === "!!who"){ 
     // respond who has the role right now. 
   }
 
   if (message === "!!pass"){
+
     // check timestamp to make sure they are within the time limit.
     // if not, return "NOPE. IM COMFY. Maybe in another xx:xx"
 
