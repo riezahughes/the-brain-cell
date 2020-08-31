@@ -7,13 +7,19 @@ Just pass it along to people of your choosing
 Make a copy of `.env.example`.  Rename it to just `.env`.
 
 `DISCORD_TOKEN` - Your Discord Bot Token generated from the developer discord panel.
+
 `POSTGRES_USER` - The name of the user you want for your database
+
 `POSTGRES_PASSWORD` - The password you want to use for the user.
+
 `POSTGRES_DB` - The name of the database you want to create
+
 `POSTGRES_HOST` - Where the host for postgres is. If you are using anything but docker toolbox this should just be `localhost`
 
 run `docker-compose up -d` in the main directory to spin up postgres with your details.
+
 run `npm install` to install all neccessary packages
+
 run `DATABASE_URL=postgres://[user]:[pass]@[host]:5432/[db] npm run migrate up`, replacing brackets with your details.
 
 After that, it's just a simple `node ./src/index.js`. I could have added it to the package.json for npm start, but eh. Later.
