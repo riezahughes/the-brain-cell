@@ -290,7 +290,7 @@ client.on('message', async (msg) => {
   
         await pool.query(updateTimeStamp);
   
-        return msg.channel.send(`<@&${checkRow.rows[0].braincell_group_id}>`, {embed});
+        return msg.channel.send(`<@${Members_Id[chosenArr]}>`, {embed});
 
       }else{
         const timeLeft = Math.floor((fifteenMinutesAgo - lastMoveTime) / 60);
@@ -308,7 +308,7 @@ client.on('message', async (msg) => {
     //TBC
   }
 
-  if (message === "!!labotomy"){
+  if (message === "!!lobotomy"){
     if(!msg.member.hasPermission("ADMINISTRATOR")){
       const embed = new Discord.MessageEmbed({
         "title": `:brain: Sorry! You don't have permission to shake the token braincell out`,
@@ -333,9 +333,6 @@ client.on('message', async (msg) => {
 
       const chosenArr = Math.floor(Math.random() * Members.length);
 
-      console.log(Members.length)
-      console.log(chosenArr);
-
       const brainPeeps = msg.guild.members.cache.filter(member => member.roles.cache.find(role => role == checkRow.rows[0].braincell_singular_id)).map(member => member.user.id);
 
       if(brainPeeps.length !== 0){
@@ -353,7 +350,7 @@ client.on('message', async (msg) => {
       await giveRole.roles.add(checkRow.rows[0].braincell_singular_id); 
 
       const embed = new Discord.MessageEmbed({
-        "title": `:brain: The servers been shook and the braincell has been passed to ${Members[chosenArr]} !`,
+        "title": `:brain: :zap: The servers been SHOOK and the braincell has been passed to ${Members[chosenArr]} !`,
         "description": `Keep it safe for the next 15 minutes`,
         "color": "f05bd7"
       }); 
