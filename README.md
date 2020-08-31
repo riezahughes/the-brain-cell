@@ -44,6 +44,8 @@ All done. A lot of extra steps, but it's worth it once its set up. People can ju
 
 `!!who` - Find out who currently has it. (WIP)
 
+### Server Admins Can: 
+
 `!!lobotomy` - pick another random person instead.
 
 ### Future things if i'm in the mood:
