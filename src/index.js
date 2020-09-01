@@ -5,7 +5,6 @@ const client = new Discord.Client();
 
 const { Pool } = require('pg')
 
-
 const pool = new Pool({
   user: process.env.POSTGRES_USER,
   host: process.env.POSTGRES_HOST,
@@ -43,9 +42,6 @@ client.on("guildDelete", async (guild) => {
 
 client.on('message', async (msg) => {
 
-
-
-  // console.log(msg.content);
   if(msg.author.bot){
       return;
   }
@@ -202,7 +198,31 @@ client.on('message', async (msg) => {
   }
 
   if (message === "!!who"){ 
-    // respond who has the role right now. 
+
+    const pullRow = `SELECT * FROM servers WHERE guild_id = ${msg.guild.id}`;
+
+    const checkRow = await pool.query(pullRow);
+
+    const brainPeep = msg.guild.members.cache.filter(member => member.roles.cache.find(role => role == checkRow.rows[0].braincell_singular_id)).map(member => member.user.tag);
+  
+    if(brainPeep.length === 0){
+
+      const embed = new Discord.MessageEmbed({
+        "title": `:brain: The Brain Cell has gone for walkies. !`,
+        "description": `Keep it safe for the next 15 minutes`,
+        "color": "ff0000"
+      }); 
+  
+      return msg.channel.send(`<@${Members_Id[chosenArr]}>`, {embed});
+    }
+
+    const embed = new Discord.MessageEmbed({
+      "title": `:brain: ${brainPeep} currently has it!`,
+      "description": `Ask them to pass it along!`,
+      "color": "f05bd7"
+    }); 
+    return msg.channel.send({embed});
+
   }
 
   if (message === "!!pass"){
@@ -309,6 +329,7 @@ client.on('message', async (msg) => {
   }
 
   if (message === "!!lobotomy"){
+
     if(!msg.member.hasPermission("ADMINISTRATOR")){
       const embed = new Discord.MessageEmbed({
         "title": `:brain: Sorry! You don't have permission to shake the token braincell out`,
