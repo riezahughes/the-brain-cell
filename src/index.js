@@ -16,6 +16,7 @@ const pool = new Pool({
 client.on('ready', async () => {
   console.log(`Logged in as ${client.user.tag}!`);
   await pool.query('SELECT * FROM servers', (err, res) => {
+    console.log(res.rows);
     client.user.setActivity(` with ${res.rowCount} other cells`);  
   })
 });
