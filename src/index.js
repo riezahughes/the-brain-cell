@@ -80,7 +80,7 @@ client.on('message', async (msg) => {
 
     const updatedResults = await pool.query(addGroupRole);
 
-    if(updatedResults.rows[0].braincell_singular_id){
+    if(updatedResults.rows[0].braincell_singular_id !== "undefined"){
 
       const Role = msg.guild.roles.cache.find(role => role.id == updatedResults.rows[0].braincell_group_id);
 
@@ -156,7 +156,7 @@ client.on('message', async (msg) => {
     const updatedResults = await pool.query(addUserRole).catch((e) => {console.log(e)});
     // console.log()
 
-    if(updatedResults.rows[0].braincell_group_id){
+    if(updatedResults.rows[0].braincell_group_id !== "undefined"){
 
       const Role = msg.guild.roles.cache.find(role => role.id == updatedResults.rows[0].braincell_group_id);
 
